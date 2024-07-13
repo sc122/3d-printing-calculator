@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מחשבון עלויות הדפסת תלת מימד</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .note {
+            text-align: center;
+            color: #555;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>מחשבון עלויות הדפסת תלת מימד</h1>
+        <label for="materialType">סוג חומר:</label>
+        <select id="materialType" onchange="updateMaterialCost()">
+            <option value="" disabled selected>בחר סוג חומר</option>
+            <option value="PETG">PETG</option>
+            <option value="ABS">ABS</option>
+            <option value="PLA">PLA</option>
+            <option value="Resin">רזין</option>
+            <option value="Nylon">ניילון</option>
+            <option value="TPU">TPU</option>
+            <option value="PC">PC</option>
+        </select>
+        <label for="materialWeight">משקל החומר (ק"ג):</label>
+        <input type="number" id="materialWeight" step="0.01">
+        <label for="materialCost">מחיר החומר לק"ג (₪):</label>
+        <input type="number" id="materialCost" step="0.01">
+        <label for="printTime">זמן ההדפסה (שעות):</label>
+        <input type="number" id="printTime" step="0.1">
+        <label for="electricityCost">עלות חשמל:</label>
+        <select id="electricityCost">
+            <option value="" disabled selected>בחר עלות חשמל</option>
+            <option value="0.5">מכונה קטנה - 0.5 ש"ח לשעה</option>
+            <option value="0.9">מכונה גדולה - 0.9 ש"ח לשעה</option>
+        </select>
+        <label for="profitMargin">אחוזי רווח נדרש (%):</label>
+        <input type="number" id="profitMargin" step="1">
+        <button onclick="calculateCost()">חשב עלות</button>
+        <div id="result"></div>
+        <div class="note">המע"מ הוא 17%</div>
+    </div>
+
+    <script>
+        const materialPrices = {
+            'PETG': 80,
+            'ABS': 70,
+            'PLA': 70,
+            'Resin': 200,
+            'Nylon': 140,
+            'TPU': 120,
+            'PC': 150
+        };
+
+        function updateMaterialCost() {
+            const materialType = document.getElementById('materialType').value;
+            const materialCostInput = document.getElementById('materialCost');
+            materialCostInput.value = materialPrices[materialType] || '';
+        }
+
+        function calculateCost() {
+            const materialType = document.getElementById('materialType').value;
+            const materialWeight = parseFloat(document.getElementById('materialWeight').value);
+            const materialCost = parseFloat(document.getElementById('materialCost').value);
+            const printTime = parseFloat(document.getElementById('printTime').value);
+            const electricityCost = parseFloat(document.getElementById('electricityCost').value);
+            const profitMargin = parseFloat(document.getElementById('profitMargin').value) / 100;
+            const vat = 0.17;
+
+            if (!materialType || isNaN(materialWeight) || isNaN(materialCost) || isNaN(printTime) || isNaN(electricityCost) || isNaN(profitMargin)) {
+                document.getElementById('result').innerText = 'נא להזין ערכים תקינים בכל השדות';
+                return;
+            }
+
+            const baseCost = (materialWeight * materialCost) + (printTime * electricityCost);
+            const costWithProfit = baseCost * (1 + profitMargin);
+            const totalCost = costWithProfit * (1 + vat);
+
+            document.getElementById('result').innerHTML = `
+                עלות בסיסית: ${baseCost.toFixed(2)} ₪<br>
+                עלות כולל רווח: ${costWithProfit.toFixed(2)} ₪<br>
+                עלות סופית (כולל מע"מ): ${totalCost.toFixed(2)} ₪
+            `;
+        }
+    </script>
+</body>
+</html>
