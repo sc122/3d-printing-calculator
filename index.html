@@ -97,7 +97,7 @@
         <input type="number" id="profitMargin" step="1">
         <button onclick="calculateCost()">חשב עלות</button>
         <div id="result"></div>
-        <div class="note">המע"מ הוא 17%</div>
+        <div class="note">המע"מ הוא 18%</div>
     </div>
 
     <script>
@@ -124,7 +124,7 @@
             const printTime = parseFloat(document.getElementById('printTime').value);
             const electricityCost = parseFloat(document.getElementById('electricityCost').value);
             const profitMargin = parseFloat(document.getElementById('profitMargin').value) / 100;
-            const vat = 0.17;
+            const vat = 0.18;
 
             if (!materialType || isNaN(materialWeight) || isNaN(materialCost) || isNaN(printTime) || isNaN(electricityCost) || isNaN(profitMargin)) {
                 document.getElementById('result').innerText = 'נא להזין ערכים תקינים בכל השדות';
